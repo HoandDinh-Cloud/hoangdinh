@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title> Dinh Nguyen Hoang Portfolio </title>
+  <title>Dinh Nguyen Hoang's Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -56,9 +56,10 @@
       padding: 20px;
       text-align: center;
       transition: transform 0.2s;
+      cursor: grab;
     }
-    .card:hover {
-      transform: translateY(-5px);
+    .card:active {
+      cursor: grabbing;
     }
     .card img {
       width: 100%;
@@ -81,6 +82,9 @@
       text-align: center;
       padding: 20px;
     }
+    .drag-over {
+      border: 2px dashed #667eea;
+    }
   </style>
 </head>
 <body>
@@ -92,16 +96,22 @@
 
   <section>
     <h2>Ứng dụng của tôi</h2>
-    <div class="apps">
-      <div class="card">
+    <div class="apps" id="apps">
+      <div class="card" draggable="true">
         <img src="app1.png" alt="Ứng dụng 1">
         <h3>Tên ứng dụng 1</h3>
         <p>Mô tả ngắn gọn về ứng dụng.</p>
         <a href="#">Xem chi tiết</a>
       </div>
-      <div class="card">
+      <div class="card" draggable="true">
         <img src="app2.png" alt="Ứng dụng 2">
         <h3>Tên ứng dụng 2</h3>
+        <p>Mô tả ngắn gọn về ứng dụng.</p>
+        <a href="#">Xem chi tiết</a>
+      </div>
+      <div class="card" draggable="true">
+        <img src="app3.png" alt="Ứng dụng 3">
+        <h3>Tên ứng dụng 3</h3>
         <p>Mô tả ngắn gọn về ứng dụng.</p>
         <a href="#">Xem chi tiết</a>
       </div>
@@ -111,12 +121,48 @@
   <section class="social">
     <h2>Kết nối với tôi</h2>
     <a href="https://www.linkedin.com/in/hoangdinhnguyen/" target="_blank">LinkedIn</a>
-    <a href="https://www.facebook.com/ZenTakumie" target="_blank">GitHub</a>
-    <a href="https://behance.net/zentakumi78" target="_blank">Twitter</a>
+    <a href="https://www.facebook.com/ZenTakumi" target="_blank">Facebook</a>
+    <a href="https://behance.net/zentakumi78" target="_blank">Behance</a>
   </section>
 
   <footer>
-    <p>Liên hệ: dinhnguyenhoang78@gmail.com</p>
+    <p>Liên hệ: email@example.com</p>
   </footer>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const container = document.getElementById('apps');
+    let draggedCard = null;
+
+    cards.forEach(card => {
+      card.addEventListener('dragstart', () => {
+        draggedCard = card;
+        setTimeout(() => card.style.display = 'none', 0);
+      });
+
+      card.addEventListener('dragend', () => {
+        draggedCard.style.display = 'block';
+        draggedCard = null;
+      });
+    });
+
+    container.addEventListener('dragover', e => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(container, e.clientX);
+      if (afterElement == null) {
+        container.appendChild(draggedCard);
+      } else {
+        container.insertBefore(draggedCard, afterElement);
+      }
+    });
+
+    function getDragAfterElement(container, x) {
+      const draggableElements = [...container.querySelectorAll('.card:not([style*="display: none"])')];
+      return draggableElements.find(element => {
+        const box = element.getBoundingClientRect();
+        return x < box.left + box.width / 2;
+      });
+    }
+  </script>
 </body>
 </html>
